@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solana Ecosystem Dashboard</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07110f;
+      --panel: #101c19;
+      --panel2: #132923;
+      --line: #25443d;
+      --text: #ecfff8;
+      --muted: #9bb8ae;
+      --accent: #8ef9c4;
+      --warn: #ffd166;
+      --bad: #ff7d7d;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #16352d, var(--bg) 40%);
+      color: var(--text);
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 22px;
+      margin-bottom: 24px;
+    }
+    h1, h2 { margin: 0; letter-spacing: 0; }
+    h1 { font-size: 32px; line-height: 1.1; }
+    h2 { font-size: 17px; margin-bottom: 14px; }
+    .muted { color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 92px;
+    }
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .value {
+      margin-top: 10px;
+      font-size: 28px;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+    section { margin-top: 24px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+    th { color: var(--muted); font-weight: 600; background: #0e1917; }
+    tr:last-child td { border-bottom: 0; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      margin: 4px 6px 4px 0;
+      color: var(--muted);
+      background: #0d1715;
+      font-size: 13px;
+    }
+    .ok { color: var(--accent); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    pre {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #07100f;
+      color: #c9ffe7;
+      max-height: 320px;
+    }
+    @media (max-width: 880px) {
+      header { display: block; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 1fr; }
+      .value { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <p class="muted">Auto-updating public-data snapshot</p>
+      <h1>Solana Ecosystem Dashboard</h1>
+    </div>
+    <div class="muted">Generated <span id="generated"></span></div>
+  </header>
+
+  <section class="grid" id="cards"></section>
+
+  <section>
+    <h2>Anomaly Flags</h2>
+    <div id="anomalies"></div>
+  </section>
+
+  <section>
+    <h2>Metric Table</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Layer</th></tr></thead>
+      <tbody id="metrics"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Data Sources</h2>
+    <div id="sources"></div>
+  </section>
+
+  <section>
+    <h2>Machine-Readable Snapshot</h2>
+    <pre id="raw"></pre>
+  </section>
+</main>
+<script id="snapshot" type="application/json">{&quot;generated_at&quot;: &quot;2026-07-31T16:05:17+00:00&quot;, &quot;sources&quot;: {&quot;solana_rpc&quot;: &quot;https://solana-rpc.publicnode.com&quot;, &quot;coingecko_price&quot;: &quot;https://api.coingecko.com/api/v3/simple/price?ids=solana&amp;vs_currencies=usd&amp;include_24hr_change=true&quot;, &quot;defillama_sol_price_fallback&quot;: &quot;https://coins.llama.fi/prices/current/coingecko:solana&quot;, &quot;defillama_chains&quot;: &quot;https://api.llama.fi/v2/chains&quot;}, &quot;metrics&quot;: {&quot;network&quot;: {&quot;health&quot;: &quot;ok&quot;, &quot;epoch&quot;: 1010, &quot;absolute_slot&quot;: 436387510, &quot;block_height&quot;: 414443755, &quot;transaction_count&quot;: 533957937278, &quot;epoch_progress_pct&quot;: 15.627314814814817, &quot;avg_tps_24_samples&quot;: 3646.4555555555557, &quot;latest_tps&quot;: 4027.016666666667, &quot;avg_slot_time_ms_24_samples&quot;: 423.2390047770802, &quot;latest_slot_time_ms&quot;: 419.5804195804196}, &quot;validators&quot;: {&quot;active&quot;: 692, &quot;delinquent&quot;: 12, &quot;delinquent_pct&quot;: 1.7045454545454544, &quot;top10_stake_pct&quot;: 24.4668098625302}, &quot;economics&quot;: {&quot;sol_usd&quot;: 73.04970763312086, &quot;sol_usd_24h_change_pct&quot;: null, &quot;tvl_usd&quot;: 4748755047.196076, &quot;stablecoins_usd&quot;: null}, &quot;supply&quot;: null}, &quot;samples&quot;: {&quot;recent_performance&quot;: [{&quot;numNonVoteTransactions&quot;: 142829, &quot;numSlots&quot;: 143, &quot;numTransactions&quot;: 241621, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436387523}, {&quot;numNonVoteTransactions&quot;: 127162, &quot;numSlots&quot;: 142, &quot;numTransactions&quot;: 224988, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436387380}, {&quot;numNonVoteTransactions&quot;: 102145, &quot;numSlots&quot;: 137, &quot;numTransactions&quot;: 196643, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436387238}, {&quot;numNonVoteTransactions&quot;: 119024, &quot;numSlots&quot;: 142, &quot;numTransactions&quot;: 216904, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436387101}, {&quot;numNonVoteTransactions&quot;: 112365, &quot;numSlots&quot;: 141, &quot;numTransactions&quot;: 208206, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386959}, {&quot;numNonVoteTransactions&quot;: 113887, &quot;numSlots&quot;: 134, &quot;numTransactions&quot;: 205525, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386818}, {&quot;numNonVoteTransactions&quot;: 105126, &quot;numSlots&quot;: 139, &quot;numTransactions&quot;: 200155, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386684}, {&quot;numNonVoteTransactions&quot;: 107285, &quot;numSlots&quot;: 141, &quot;numTransactions&quot;: 204314, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386545}, {&quot;numNonVoteTransactions&quot;: 109835, &quot;numSlots&quot;: 142, &quot;numTransactions&quot;: 207798, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386404}, {&quot;numNonVoteTransactions&quot;: 115441, &quot;numSlots&quot;: 138, &quot;numTransactions&quot;: 206497, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386262}, {&quot;numNonVoteTransactions&quot;: 111913, &quot;numSlots&quot;: 143, &quot;numTransactions&quot;: 208457, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436386124}, {&quot;numNonVoteTransactions&quot;: 115979, &quot;numSlots&quot;: 138, &quot;numTransactions&quot;: 212077, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385981}, {&quot;numNonVoteTransactions&quot;: 141970, &quot;numSlots&quot;: 147, &quot;numTransactions&quot;: 241788, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385843}, {&quot;numNonVoteTransactions&quot;: 131239, &quot;numSlots&quot;: 147, &quot;numTransactions&quot;: 232621, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385696}, {&quot;numNonVoteTransactions&quot;: 134870, &quot;numSlots&quot;: 144, &quot;numTransactions&quot;: 230763, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385549}, {&quot;numNonVoteTransactions&quot;: 124793, &quot;numSlots&quot;: 138, &quot;numTransactions&quot;: 220118, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385405}, {&quot;numNonVoteTransactions&quot;: 130639, &quot;numSlots&quot;: 143, &quot;numTransactions&quot;: 228967, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385267}, {&quot;numNonVoteTransactions&quot;: 124500, &quot;numSlots&quot;: 145, &quot;numTransactions&quot;: 224379, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436385124}, {&quot;numNonVoteTransactions&quot;: 139961, &quot;numSlots&quot;: 141, &quot;numTransactions&quot;: 237059, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436384979}, {&quot;numNonVoteTransactions&quot;: 123795, &quot;numSlots&quot;: 143, &quot;numTransactions&quot;: 221424, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436384838}, {&quot;numNonVoteTransactions&quot;: 114418, &quot;numSlots&quot;: 144, &quot;numTransactions&quot;: 214531, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436384695}, {&quot;numNonVoteTransactions&quot;: 128106, &quot;numSlots&quot;: 145, &quot;numTransactions&quot;: 226667, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436384551}, {&quot;numNonVoteTransactions&quot;: 118552, &quot;numSlots&quot;: 144, &quot;numTransactions&quot;: 214814, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436384406}, {&quot;numNonVoteTransactions&quot;: 126887, &quot;numSlots&quot;: 143, &quot;numTransactions&quot;: 224580, &quot;samplePeriodSecs&quot;: 60, &quot;slot&quot;: 436384262}]}, &quot;anomalies&quot;: [{&quot;severity&quot;: &quot;info&quot;, &quot;metric&quot;: &quot;data_fetch&quot;, &quot;message&quot;: &quot;One or more data sources returned errors.&quot;}], &quot;errors&quot;: [&quot;getSupply: TimeoutError: The read operation timed out&quot;, &quot;CoinGecko SOL price: URLError: &lt;urlopen error timed out&gt;&quot;]}</script>
+<script>
+const snapshot = JSON.parse(document.getElementById('snapshot').textContent);
+const m = snapshot.metrics;
+const compact = (value) => {
+  if (value === null || value === undefined || Number.isNaN(value)) return 'n/a';
+  const abs = Math.abs(Number(value));
+  if (abs >= 1e12) return (value / 1e12).toFixed(2) + 'T';
+  if (abs >= 1e9) return (value / 1e9).toFixed(2) + 'B';
+  if (abs >= 1e6) return (value / 1e6).toFixed(2) + 'M';
+  if (abs >= 1e3) return (value / 1e3).toFixed(2) + 'K';
+  return Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+};
+const pct = (value) => value === null || value === undefined ? 'n/a' : Number(value).toFixed(2) + '%';
+const ms = (value) => value === null || value === undefined ? 'n/a' : Number(value).toFixed(0) + ' ms';
+document.getElementById('generated').textContent = snapshot.generated_at;
+
+const cards = [
+  ['Network health', m.network.health || 'n/a', 'runtime'],
+  ['Latest TPS', compact(m.network.latest_tps), 'performance'],
+  ['Avg slot time', ms(m.network.avg_slot_time_ms_24_samples), 'performance'],
+  ['Epoch progress', pct(m.network.epoch_progress_pct), 'runtime'],
+  ['Active validators', compact(m.validators.active), 'validators'],
+  ['Delinquent validators', pct(m.validators.delinquent_pct), 'validators'],
+  ['SOL price', m.economics.sol_usd ? '$' + Number(m.economics.sol_usd).toFixed(2) : 'n/a', 'markets'],
+  ['TVL', m.economics.tvl_usd ? '$' + compact(m.economics.tvl_usd) : 'n/a', 'markets'],
+];
+document.getElementById('cards').innerHTML = cards.map(([label, value, layer]) => `
+  <article class="card"><div class="label">${label}</div><div class="value">${value}</div><div class="muted">${layer}</div></article>
+`).join('');
+
+const rows = [
+  ['Epoch', m.network.epoch, 'runtime'],
+  ['Absolute slot', compact(m.network.absolute_slot), 'runtime'],
+  ['Block height', compact(m.network.block_height), 'runtime'],
+  ['Transactions processed', compact(m.network.transaction_count), 'runtime'],
+  ['Average TPS, 24 samples', compact(m.network.avg_tps_24_samples), 'performance'],
+  ['Latest TPS', compact(m.network.latest_tps), 'performance'],
+  ['Average slot time, 24 samples', ms(m.network.avg_slot_time_ms_24_samples), 'performance'],
+  ['Latest slot time', ms(m.network.latest_slot_time_ms), 'performance'],
+  ['Active validators', compact(m.validators.active), 'validators'],
+  ['Delinquent validators', compact(m.validators.delinquent), 'validators'],
+  ['Delinquent validator ratio', pct(m.validators.delinquent_pct), 'validators'],
+  ['Top 10 validator stake share', pct(m.validators.top10_stake_pct), 'validators'],
+  ['SOL 24h change', pct(m.economics.sol_usd_24h_change_pct), 'markets'],
+  ['Stablecoins', m.economics.stablecoins_usd ? '$' + compact(m.economics.stablecoins_usd) : 'n/a', 'markets'],
+];
+document.getElementById('metrics').innerHTML = rows.map(([name, value, layer]) => `<tr><td>${name}</td><td>${value}</td><td>${layer}</td></tr>`).join('');
+
+document.getElementById('anomalies').innerHTML = snapshot.anomalies.length
+  ? snapshot.anomalies.map(a => `<span class="pill ${a.severity === 'watch' ? 'warn' : 'ok'}">${a.severity} / ${a.metric}: ${a.message}</span>`).join('')
+  : '<span class="pill ok">No threshold-based anomalies detected</span>';
+
+document.getElementById('sources').innerHTML = Object.entries(snapshot.sources)
+  .map(([name, url]) => `<span class="pill">${name}: <a href="${url}" target="_blank" rel="noreferrer" style="color:var(--accent);margin-left:6px;">source</a></span>`)
+  .join('');
+document.getElementById('raw').textContent = JSON.stringify(snapshot, null, 2);
+</script>
+</body>
+</html>

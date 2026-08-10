@@ -14,10 +14,10 @@ import json
 import math
 import os
 import pathlib
-import signal
 import statistics
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 
@@ -34,18 +34,21 @@ COINGECKO_PRICE = (
 )
 DEFILLAMA_CHAINS = "https://api.llama.fi/v2/chains"
 DEFILLAMA_SOL_PRICE = "https://coins.llama.fi/prices/current/coingecko:solana"
-FETCH_DEADLINE_SECONDS = int(os.environ.get("FETCH_DEADLINE_SECONDS", "18"))
-
-
-class FetchDeadlineExceeded(TimeoutError):
-    """Raised when a data source exceeds the per-source wall-clock deadline."""
+DEFILLAMA_SOLANA_DEX_VOLUME = (
+    "https://api.llama.fi/overview/dexs/solana"
+    "?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true"
+)
+DEFILLAMA_SOLANA_STABLECOINS = "https://stablecoins.llama.fi/stablecoincharts/Solana"
+FETCH_TIMEOUT_SECONDS = int(os.environ.get("FETCH_TIMEOUT_SECONDS", "12"))
 
 
 def utc_now() -> str:
     return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat()
 
 
-def post_json(url: str, payload: dict[str, Any], timeout: int = 8) -> dict[str, Any]:
+def post_json(
+    url: str, payload: dict[str, Any], timeout: int = FETCH_TIMEOUT_SECONDS
+) -> dict[str, Any]:
     req = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
@@ -59,7 +62,7 @@ def post_json(url: str, payload: dict[str, Any], timeout: int = 8) -> dict[str, 
         return json.loads(resp.read().decode("utf-8"))
 
 
-def get_json(url: str, timeout: int = 8) -> Any:
+def get_json(url: str, timeout: int = FETCH_TIMEOUT_SECONDS) -> Any:
     req = urllib.request.Request(url, headers={"user-agent": "solana-ecosystem-dashboard/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return json.loads(resp.read().decode("utf-8"))
@@ -73,12 +76,6 @@ def rpc(method: str, params: list[Any] | None = None) -> dict[str, Any]:
 
 
 def safe_fetch(label: str, fn) -> tuple[Any | None, str | None]:
-    def deadline_handler(_signum, _frame) -> None:
-        raise FetchDeadlineExceeded(f"{label} exceeded {FETCH_DEADLINE_SECONDS}s")
-
-    previous_handler = signal.getsignal(signal.SIGALRM)
-    signal.signal(signal.SIGALRM, deadline_handler)
-    signal.setitimer(signal.ITIMER_REAL, FETCH_DEADLINE_SECONDS)
     try:
         return fn(), None
     except (
@@ -90,9 +87,6 @@ def safe_fetch(label: str, fn) -> tuple[Any | None, str | None]:
         RuntimeError,
     ) as exc:
         return None, f"{label}: {type(exc).__name__}: {exc}"
-    finally:
-        signal.setitimer(signal.ITIMER_REAL, 0)
-        signal.signal(signal.SIGALRM, previous_handler)
 
 
 def pct(numerator: float, denominator: float) -> float | None:
@@ -111,8 +105,41 @@ def compact_number(value: float | int | None) -> str:
     return f"{value:,.2f}" if not value.is_integer() else f"{int(value):,}"
 
 
-def build_snapshot() -> dict[str, Any]:
+def latest_pegged_usd(history: Any) -> float | int | None:
+    """Return the latest USD-value circulating stablecoin figure from DeFiLlama."""
+    if not isinstance(history, list):
+        return None
+    for row in reversed(history):
+        if not isinstance(row, dict):
+            continue
+        value = (row.get("totalCirculatingUSD") or {}).get("peggedUSD")
+        if isinstance(value, (int, float)):
+            return value
+    return None
+
+
+def fetch_sources(fetchers: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """Fetch independent public sources concurrently and retain every failure."""
+    values: dict[str, Any] = {}
     errors: list[str] = []
+    with ThreadPoolExecutor(max_workers=len(fetchers)) as executor:
+        futures = {
+            executor.submit(safe_fetch, label, fetcher): label
+            for label, fetcher in fetchers.items()
+        }
+        for future in as_completed(futures):
+            label = futures[future]
+            try:
+                value, error = future.result()
+            except Exception as exc:  # Defensive: retain a source-level failure.
+                value, error = None, f"{label}: {type(exc).__name__}: {exc}"
+            values[label] = value
+            if error:
+                errors.append(error)
+    return values, errors
+
+
+def build_snapshot() -> dict[str, Any]:
     fetched_at = utc_now()
 
     def fetch_rpc(method: str, params: list[Any] | None = None) -> Any:
@@ -121,46 +148,48 @@ def build_snapshot() -> dict[str, Any]:
             raise RuntimeError(response["error"])
         return response.get("result")
 
-    health, err = safe_fetch("getHealth", lambda: fetch_rpc("getHealth"))
-    if err:
-        errors.append(err)
+    rpc_fetchers = {
+        "getHealth": lambda: fetch_rpc("getHealth"),
+        "getEpochInfo": lambda: fetch_rpc("getEpochInfo"),
+        "getRecentPerformanceSamples": lambda: fetch_rpc(
+            "getRecentPerformanceSamples", [24]
+        ),
+        "getVoteAccounts": lambda: fetch_rpc("getVoteAccounts"),
+        "getSupply": lambda: fetch_rpc(
+            "getSupply", [{"excludeNonCirculatingAccountsList": True}]
+        ),
+    }
+    payloads: dict[str, Any] = {}
+    errors: list[str] = []
+    # Solana's public RPC can refuse simultaneous calls from one client. Keep
+    # this single-host group ordered while independent HTTP sources run together.
+    for label, fetcher in rpc_fetchers.items():
+        value, error = safe_fetch(label, fetcher)
+        payloads[label] = value
+        if error:
+            errors.append(error)
 
-    epoch_info, err = safe_fetch("getEpochInfo", lambda: fetch_rpc("getEpochInfo"))
-    if err:
-        errors.append(err)
-
-    performance_samples, err = safe_fetch(
-        "getRecentPerformanceSamples", lambda: fetch_rpc("getRecentPerformanceSamples", [24])
+    external_payloads, external_errors = fetch_sources(
+        {
+            "CoinGecko SOL price": lambda: get_json(COINGECKO_PRICE),
+            "DeFiLlama SOL price fallback": lambda: get_json(DEFILLAMA_SOL_PRICE),
+            "DeFiLlama chains": lambda: get_json(DEFILLAMA_CHAINS),
+            "DeFiLlama Solana DEX volume": lambda: get_json(DEFILLAMA_SOLANA_DEX_VOLUME),
+            "DeFiLlama Solana stablecoins": lambda: get_json(DEFILLAMA_SOLANA_STABLECOINS),
+        }
     )
-    if err:
-        errors.append(err)
-
-    vote_accounts, err = safe_fetch("getVoteAccounts", lambda: fetch_rpc("getVoteAccounts"))
-    if err:
-        errors.append(err)
-
-    supply, err = safe_fetch(
-        "getSupply",
-        lambda: fetch_rpc("getSupply", [{"excludeNonCirculatingAccountsList": True}]),
-    )
-    if err:
-        errors.append(err)
-
-    price_payload, err = safe_fetch("CoinGecko SOL price", lambda: get_json(COINGECKO_PRICE))
-    if err:
-        errors.append(err)
-
-    fallback_price_payload = None
-    if not (price_payload or {}).get("solana"):
-        fallback_price_payload, err = safe_fetch(
-            "DeFiLlama SOL price fallback", lambda: get_json(DEFILLAMA_SOL_PRICE)
-        )
-        if err:
-            errors.append(err)
-
-    chain_payload, err = safe_fetch("DeFiLlama chains", lambda: get_json(DEFILLAMA_CHAINS))
-    if err:
-        errors.append(err)
+    payloads.update(external_payloads)
+    errors.extend(external_errors)
+    health = payloads["getHealth"]
+    epoch_info = payloads["getEpochInfo"]
+    performance_samples = payloads["getRecentPerformanceSamples"]
+    vote_accounts = payloads["getVoteAccounts"]
+    supply = payloads["getSupply"]
+    price_payload = payloads["CoinGecko SOL price"]
+    fallback_price_payload = payloads["DeFiLlama SOL price fallback"]
+    chain_payload = payloads["DeFiLlama chains"]
+    dex_volume_payload = payloads["DeFiLlama Solana DEX volume"]
+    stablecoin_history = payloads["DeFiLlama Solana stablecoins"]
 
     samples = performance_samples or []
     sample_tps = []
@@ -217,7 +246,8 @@ def build_snapshot() -> dict[str, Any]:
             "sol_usd": coingecko.get("usd") or fallback_sol.get("price"),
             "sol_usd_24h_change_pct": coingecko.get("usd_24h_change"),
             "tvl_usd": (solana_chain or {}).get("tvl"),
-            "stablecoins_usd": (solana_chain or {}).get("stablecoins"),
+            "stablecoins_usd": latest_pegged_usd(stablecoin_history),
+            "dex_volume_24h_usd": (dex_volume_payload or {}).get("total24h"),
         },
         "supply": (supply or {}).get("value") if isinstance(supply, dict) else None,
     }
@@ -237,6 +267,10 @@ def build_snapshot() -> dict[str, Any]:
         anomalies.append({"severity": "info", "metric": "sol_price_24h", "message": "SOL moved more than 8% over 24h."})
     if metrics["economics"]["tvl_usd"] is None:
         anomalies.append({"severity": "info", "metric": "tvl", "message": "DeFiLlama TVL was unavailable in this run."})
+    if metrics["economics"]["dex_volume_24h_usd"] is None:
+        anomalies.append({"severity": "info", "metric": "dex_volume", "message": "DeFiLlama Solana DEX volume was unavailable in this run."})
+    if metrics["economics"]["stablecoins_usd"] is None:
+        anomalies.append({"severity": "info", "metric": "stablecoins", "message": "DeFiLlama Solana stablecoin supply was unavailable in this run."})
     if errors:
         anomalies.append({"severity": "info", "metric": "data_fetch", "message": "One or more data sources returned errors."})
 
@@ -247,6 +281,8 @@ def build_snapshot() -> dict[str, Any]:
             "coingecko_price": COINGECKO_PRICE,
             "defillama_sol_price_fallback": DEFILLAMA_SOL_PRICE,
             "defillama_chains": DEFILLAMA_CHAINS,
+            "defillama_solana_dex_volume": DEFILLAMA_SOLANA_DEX_VOLUME,
+            "defillama_solana_stablecoins": DEFILLAMA_SOLANA_STABLECOINS,
         },
         "metrics": metrics,
         "samples": {
@@ -279,6 +315,8 @@ def render_report(snapshot: dict[str, Any]) -> str:
         ("SOL price", f"${e['sol_usd']:.2f}" if e["sol_usd"] is not None else "n/a"),
         ("SOL 24h change", f"{e['sol_usd_24h_change_pct']:.2f}%" if e["sol_usd_24h_change_pct"] is not None else "n/a"),
         ("Solana TVL", f"${compact_number(e['tvl_usd'])}" if e["tvl_usd"] is not None else "n/a"),
+        ("Stablecoin supply", f"${compact_number(e['stablecoins_usd'])}" if e["stablecoins_usd"] is not None else "n/a"),
+        ("DEX volume, 24h", f"${compact_number(e['dex_volume_24h_usd'])}" if e["dex_volume_24h_usd"] is not None else "n/a"),
     ]
 
     lines = [
@@ -311,7 +349,8 @@ def render_report(snapshot: dict[str, Any]) -> str:
         "",
         "- The same script refreshes JSON, Markdown, and HTML outputs.",
         "- Solana RPC data covers live chain health, epoch, recent performance, validators, and supply.",
-        "- CoinGecko and DeFiLlama provide economic context outside the validator/runtime layer.",
+        "- CoinGecko and DeFiLlama provide price, TVL, stablecoin-supply, and DEX-volume context outside the validator/runtime layer.",
+        "- Independent external sources fetch concurrently with per-request timeouts; calls to one public RPC stay ordered to avoid rate-limit failures.",
         "- Thresholds are intentionally simple and visible so reviewers can tune them without reverse-engineering the pipeline.",
         "",
         "## Source URLs",
@@ -505,6 +544,7 @@ const cards = [
   ['Delinquent validators', pct(m.validators.delinquent_pct), 'validators'],
   ['SOL price', m.economics.sol_usd ? '$' + Number(m.economics.sol_usd).toFixed(2) : 'n/a', 'markets'],
   ['TVL', m.economics.tvl_usd ? '$' + compact(m.economics.tvl_usd) : 'n/a', 'markets'],
+  ['DEX volume, 24h', m.economics.dex_volume_24h_usd ? '$' + compact(m.economics.dex_volume_24h_usd) : 'n/a', 'markets'],
 ];
 document.getElementById('cards').innerHTML = cards.map(([label, value, layer]) => `
   <article class="card"><div class="label">${{label}}</div><div class="value">${{value}}</div><div class="muted">${{layer}}</div></article>
@@ -524,7 +564,9 @@ const rows = [
   ['Delinquent validator ratio', pct(m.validators.delinquent_pct), 'validators'],
   ['Top 10 validator stake share', pct(m.validators.top10_stake_pct), 'validators'],
   ['SOL 24h change', pct(m.economics.sol_usd_24h_change_pct), 'markets'],
+  ['Solana TVL', m.economics.tvl_usd ? '$' + compact(m.economics.tvl_usd) : 'n/a', 'markets'],
   ['Stablecoins', m.economics.stablecoins_usd ? '$' + compact(m.economics.stablecoins_usd) : 'n/a', 'markets'],
+  ['DEX volume, 24h', m.economics.dex_volume_24h_usd ? '$' + compact(m.economics.dex_volume_24h_usd) : 'n/a', 'markets'],
 ];
 document.getElementById('metrics').innerHTML = rows.map(([name, value, layer]) => `<tr><td>${{name}}</td><td>${{value}}</td><td>${{layer}}</td></tr>`).join('');
 

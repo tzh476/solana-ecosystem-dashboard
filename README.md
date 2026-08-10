@@ -19,7 +19,7 @@ https://earn.superteam.fun/listing/develop-solana-ecosystem-auto-updating-report
   - `getSupply`
 - CoinGecko simple price API for SOL price and 24h change.
 - DeFiLlama Coins as a SOL price fallback when CoinGecko is unavailable.
-- DeFiLlama chain TVL endpoint for Solana TVL.
+- DeFiLlama chain, stablecoin-history, and DEX-volume endpoints for Solana TVL, stablecoin supply, and 24h DEX volume.
 
 ## Run
 
@@ -35,7 +35,11 @@ SOLANA_RPC_URL=https://solana-rpc.publicnode.com python3 fetch_solana_dashboard.
 
 The script intentionally uses only Python standard-library modules. It writes all outputs into this directory and can be run repeatedly to refresh the report.
 
-Each source has a wall-clock deadline so one slow API cannot block the whole report. Failed sources are recorded in the JSON snapshot, Markdown report, and dashboard anomaly section.
+Independent third-party sources are fetched concurrently with a bounded HTTP timeout, while calls to the same public Solana RPC stay ordered to avoid rate-limit failures. Failed sources are recorded in the JSON snapshot, Markdown report, and dashboard anomaly section.
+
+The dashboard is intentionally a generated static artifact: run the script locally or from any scheduler, then publish the resulting JSON, Markdown, and HTML together. This keeps the live-data provenance reviewable and avoids API keys, embedded credentials, or browser-only state.
+
+The included GitHub Actions workflow also refreshes these generated files every six hours and can be run manually from the Actions tab.
 
 ## Submission Notes
 

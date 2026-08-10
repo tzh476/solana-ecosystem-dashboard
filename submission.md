@@ -2,7 +2,9 @@
 
 ## Link
 
-Use the hosted or repository link to `dashboard.html` once published.
+Live dashboard: https://tzh476.github.io/solana-ecosystem-dashboard/
+
+Repository: https://github.com/tzh476/solana-ecosystem-dashboard
 
 ## Short Description
 
@@ -14,8 +16,10 @@ I built an auto-updating Solana ecosystem report and interactive dashboard. It p
 - Recent performance samples with computed TPS and slot time.
 - Validator active/delinquent counts and stake concentration metrics.
 - SOL price and 24-hour price movement from CoinGecko.
-- Solana TVL from DeFiLlama.
+- Solana TVL, stablecoin supply, and 24-hour DEX volume from DeFiLlama.
 - Simple anomaly flags for low TPS, slow slot time, validator delinquency, price moves, and TVL source availability.
+- Per-source failures remain visible in every generated output instead of silently presenting stale values as live data.
+- GitHub Actions refreshes the generated outputs every six hours; the workflow can also be run manually for an auditable fresh snapshot.
 
 ## Files
 

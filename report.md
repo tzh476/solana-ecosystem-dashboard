@@ -1,6 +1,6 @@
 # Solana Ecosystem Auto-Updating Report
 
-Generated: `2026-08-10T02:47:47+00:00`
+Generated: `2026-08-10T12:13:18+00:00`
 
 ## Executive Summary
 
@@ -12,20 +12,22 @@ This report combines live network, validator, market, and TVL signals into a rep
 | --- | ---: |
 | Network health | ok |
 | Epoch | 1014 |
-| Epoch progress | 62.75% |
-| Absolute slot | 438.32M |
-| Block height | 416.37M |
-| Transactions processed | 536.71B |
-| Latest TPS | 3.12K |
-| Average TPS, last 24 samples | 3.40K |
-| Average slot time, last 24 samples | 422 ms |
-| Active validators | 691 |
-| Delinquent validators | 7 |
-| Delinquent validator ratio | 1.00% |
+| Epoch progress | 81.34% |
+| Absolute slot | 438.40M |
+| Block height | 416.45M |
+| Transactions processed | 536.82B |
+| Latest TPS | 3.31K |
+| Average TPS, last 24 samples | 3.53K |
+| Average slot time, last 24 samples | 424 ms |
+| Active validators | 690 |
+| Delinquent validators | 8 |
+| Delinquent validator ratio | 1.15% |
 | Top 10 validator stake share | 24.39% |
-| SOL price | $76.76 |
-| SOL 24h change | 1.17% |
-| Solana TVL | $4.84B |
+| SOL price | $77.02 |
+| SOL 24h change | 0.73% |
+| Solana TVL | $4.85B |
+| Stablecoin supply | $16.25B |
+| DEX volume, 24h | $1.35B |
 
 ## Anomaly Flags
 
@@ -35,7 +37,8 @@ This report combines live network, validator, market, and TVL signals into a rep
 
 - The same script refreshes JSON, Markdown, and HTML outputs.
 - Solana RPC data covers live chain health, epoch, recent performance, validators, and supply.
-- CoinGecko and DeFiLlama provide economic context outside the validator/runtime layer.
+- CoinGecko and DeFiLlama provide price, TVL, stablecoin-supply, and DEX-volume context outside the validator/runtime layer.
+- Independent external sources fetch concurrently with per-request timeouts; calls to one public RPC stay ordered to avoid rate-limit failures.
 - Thresholds are intentionally simple and visible so reviewers can tune them without reverse-engineering the pipeline.
 
 ## Source URLs
@@ -44,3 +47,5 @@ This report combines live network, validator, market, and TVL signals into a rep
 - coingecko_price: https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true
 - defillama_sol_price_fallback: https://coins.llama.fi/prices/current/coingecko:solana
 - defillama_chains: https://api.llama.fi/v2/chains
+- defillama_solana_dex_volume: https://api.llama.fi/overview/dexs/solana?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true
+- defillama_solana_stablecoins: https://stablecoins.llama.fi/stablecoincharts/Solana

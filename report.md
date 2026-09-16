@@ -1,6 +1,6 @@
 # Solana Ecosystem Auto-Updating Report
 
-Generated: `2026-09-15T21:20:15+00:00`
+Generated: `2026-09-16T04:48:16+00:00`
 
 ## Executive Summary
 
@@ -12,22 +12,22 @@ This report combines live network, validator, market, and TVL signals into a rep
 | --- | ---: |
 | Network health | ok |
 | Epoch | 1035 |
-| Epoch progress | 53.41% |
-| Absolute slot | 447.35M |
-| Block height | 425.39M |
-| Transactions processed | 548.83B |
-| Latest TPS | 4.69K |
-| Average TPS, last 24 samples | 4.56K |
-| Average slot time, last 24 samples | 317 ms |
+| Epoch progress | 72.98% |
+| Absolute slot | 447.44M |
+| Block height | 425.48M |
+| Transactions processed | 548.95B |
+| Latest TPS | 3.56K |
+| Average TPS, last 24 samples | 3.63K |
+| Average slot time, last 24 samples | 318 ms |
 | Active validators | 679 |
 | Delinquent validators | 10 |
 | Delinquent validator ratio | 1.45% |
 | Top 10 validator stake share | 24.33% |
-| SOL price | $97.10 |
-| SOL 24h change | -6.43% |
-| Solana TVL | $5.76B |
-| Stablecoin supply | $16.32B |
-| DEX volume, 24h | $2.53B |
+| SOL price | $97.42 |
+| SOL 24h change | -3.81% |
+| Solana TVL | $5.73B |
+| Stablecoin supply | $15.90B |
+| DEX volume, 24h | $2.50B |
 
 ## Anomaly Flags
 

@@ -1,6 +1,6 @@
 # Solana Ecosystem Auto-Updating Report
 
-Generated: `2026-09-22T16:56:39+00:00`
+Generated: `2026-09-22T21:17:52+00:00`
 
 ## Executive Summary
 
@@ -12,20 +12,20 @@ This report combines live network, validator, market, and TVL signals into a rep
 | --- | ---: |
 | Network health | ok |
 | Epoch | 1040 |
-| Epoch progress | 36.81% |
-| Absolute slot | 449.44M |
-| Block height | 427.48M |
-| Transactions processed | 551.39B |
-| Latest TPS | 4.85K |
-| Average TPS, last 24 samples | 4.85K |
-| Average slot time, last 24 samples | 270 ms |
-| Active validators | 676 |
-| Delinquent validators | 13 |
-| Delinquent validator ratio | 1.89% |
-| Top 10 validator stake share | 24.34% |
-| SOL price | $117.64 |
-| SOL 24h change | -0.14% |
-| Solana TVL | $6.46B |
+| Epoch progress | 50.33% |
+| Absolute slot | 449.50M |
+| Block height | 427.54M |
+| Transactions processed | 551.47B |
+| Latest TPS | 4.50K |
+| Average TPS, last 24 samples | 4.45K |
+| Average slot time, last 24 samples | 268 ms |
+| Active validators | 677 |
+| Delinquent validators | 12 |
+| Delinquent validator ratio | 1.74% |
+| Top 10 validator stake share | 24.33% |
+| SOL price | $117.78 |
+| SOL 24h change | -0.80% |
+| Solana TVL | $6.50B |
 | Stablecoin supply | $17.11B |
 | DEX volume, 24h | $3.43B |
 

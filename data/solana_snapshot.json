@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T13:53:01+00:00",
+  "generated_at": "2026-09-28T23:15:33+00:00",
   "sources": {
     "solana_rpc": "https://api.mainnet-beta.solana.com",
     "coingecko_price": "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true",
@@ -11,205 +11,205 @@
   "metrics": {
     "network": {
       "health": "ok",
-      "epoch": 1044,
-      "absolute_slot": 451337997,
-      "block_height": 429377632,
-      "transaction_count": 553668719884,
-      "epoch_progress_pct": 76.38819444444445,
-      "avg_tps_24_samples": 5158.144444444445,
-      "latest_tps": 5002.333333333333,
-      "avg_slot_time_ms_24_samples": 269.8378340808912,
-      "latest_slot_time_ms": 272.7272727272727
+      "epoch": 1045,
+      "absolute_slot": 451463820,
+      "block_height": 429503406,
+      "transaction_count": 553831909452,
+      "epoch_progress_pct": 5.513888888888889,
+      "avg_tps_24_samples": 4729.534027777778,
+      "latest_tps": 4524.25,
+      "avg_slot_time_ms_24_samples": 270.10213625846484,
+      "latest_slot_time_ms": 270.27027027027026
     },
     "validators": {
       "active": 675,
-      "delinquent": 8,
-      "delinquent_pct": 1.171303074670571,
-      "top10_stake_pct": 24.464262842241
+      "delinquent": 7,
+      "delinquent_pct": 1.0263929618768328,
+      "top10_stake_pct": 24.450881757684197
     },
     "economics": {
-      "sol_usd": 119.69,
-      "sol_usd_24h_change_pct": -2.6045846495326366,
-      "tvl_usd": 6519799724.809399,
-      "stablecoins_usd": 16662530948.44,
-      "dex_volume_24h_usd": 1903277621.71
+      "sol_usd": 118.59,
+      "sol_usd_24h_change_pct": -2.40361014862501,
+      "tvl_usd": 6538610102.565775,
+      "stablecoins_usd": 16663504425.88,
+      "dex_volume_24h_usd": 1926466128.71
     },
     "supply": {
-      "circulating": 587781990050677013,
-      "nonCirculating": 47058711295788603,
+      "circulating": 587853045601584773,
+      "nonCirculating": 47065969860499237,
       "nonCirculatingAccounts": [],
-      "total": 634840701346465616
+      "total": 634919015462084010
     }
   },
   "samples": {
     "recent_performance": [
       {
-        "numNonVoteTransactions": 152177,
-        "numSlots": 220,
-        "numTransactions": 300140,
+        "numNonVoteTransactions": 121986,
+        "numSlots": 222,
+        "numTransactions": 271455,
         "samplePeriodSecs": 60,
-        "slot": 451337892
+        "slot": 451463835
       },
       {
-        "numNonVoteTransactions": 151464,
+        "numNonVoteTransactions": 109836,
+        "numSlots": 226,
+        "numTransactions": 261693,
+        "samplePeriodSecs": 60,
+        "slot": 451463613
+      },
+      {
+        "numNonVoteTransactions": 110876,
+        "numSlots": 224,
+        "numTransactions": 261484,
+        "samplePeriodSecs": 60,
+        "slot": 451463387
+      },
+      {
+        "numNonVoteTransactions": 101938,
+        "numSlots": 228,
+        "numTransactions": 254584,
+        "samplePeriodSecs": 60,
+        "slot": 451463163
+      },
+      {
+        "numNonVoteTransactions": 112977,
         "numSlots": 227,
-        "numTransactions": 304773,
+        "numTransactions": 266326,
         "samplePeriodSecs": 60,
-        "slot": 451337672
+        "slot": 451462935
       },
       {
-        "numNonVoteTransactions": 151817,
-        "numSlots": 226,
-        "numTransactions": 303233,
-        "samplePeriodSecs": 60,
-        "slot": 451337445
-      },
-      {
-        "numNonVoteTransactions": 152863,
-        "numSlots": 226,
-        "numTransactions": 304864,
-        "samplePeriodSecs": 60,
-        "slot": 451337219
-      },
-      {
-        "numNonVoteTransactions": 155266,
-        "numSlots": 227,
-        "numTransactions": 307449,
-        "samplePeriodSecs": 60,
-        "slot": 451336993
-      },
-      {
-        "numNonVoteTransactions": 160948,
-        "numSlots": 221,
-        "numTransactions": 309377,
-        "samplePeriodSecs": 60,
-        "slot": 451336766
-      },
-      {
-        "numNonVoteTransactions": 160220,
-        "numSlots": 222,
-        "numTransactions": 309254,
-        "samplePeriodSecs": 60,
-        "slot": 451336545
-      },
-      {
-        "numNonVoteTransactions": 160025,
-        "numSlots": 219,
-        "numTransactions": 307203,
-        "samplePeriodSecs": 60,
-        "slot": 451336323
-      },
-      {
-        "numNonVoteTransactions": 145261,
-        "numSlots": 219,
-        "numTransactions": 292590,
-        "samplePeriodSecs": 60,
-        "slot": 451336104
-      },
-      {
-        "numNonVoteTransactions": 157956,
-        "numSlots": 222,
-        "numTransactions": 306561,
-        "samplePeriodSecs": 60,
-        "slot": 451335885
-      },
-      {
-        "numNonVoteTransactions": 143557,
-        "numSlots": 213,
-        "numTransactions": 287459,
-        "samplePeriodSecs": 60,
-        "slot": 451335663
-      },
-      {
-        "numNonVoteTransactions": 164344,
+        "numNonVoteTransactions": 120223,
         "numSlots": 225,
-        "numTransactions": 315696,
+        "numTransactions": 271417,
         "samplePeriodSecs": 60,
-        "slot": 451335450
+        "slot": 451462708
       },
       {
-        "numNonVoteTransactions": 163039,
-        "numSlots": 226,
-        "numTransactions": 314449,
+        "numNonVoteTransactions": 141577,
+        "numSlots": 219,
+        "numTransactions": 288628,
         "samplePeriodSecs": 60,
-        "slot": 451335225
+        "slot": 451462483
       },
       {
-        "numNonVoteTransactions": 168646,
-        "numSlots": 222,
-        "numTransactions": 318640,
-        "samplePeriodSecs": 60,
-        "slot": 451334999
-      },
-      {
-        "numNonVoteTransactions": 182239,
+        "numNonVoteTransactions": 105896,
         "numSlots": 225,
-        "numTransactions": 333353,
+        "numTransactions": 256999,
         "samplePeriodSecs": 60,
-        "slot": 451334777
+        "slot": 451462264
       },
       {
-        "numNonVoteTransactions": 184231,
-        "numSlots": 221,
-        "numTransactions": 332261,
+        "numNonVoteTransactions": 120722,
+        "numSlots": 224,
+        "numTransactions": 271036,
         "samplePeriodSecs": 60,
-        "slot": 451334552
+        "slot": 451462039
       },
       {
-        "numNonVoteTransactions": 178869,
-        "numSlots": 226,
-        "numTransactions": 328766,
+        "numNonVoteTransactions": 133266,
+        "numSlots": 224,
+        "numTransactions": 283660,
         "samplePeriodSecs": 60,
-        "slot": 451334331
+        "slot": 451461815
       },
       {
-        "numNonVoteTransactions": 165957,
-        "numSlots": 220,
-        "numTransactions": 313843,
+        "numNonVoteTransactions": 125406,
+        "numSlots": 222,
+        "numTransactions": 274577,
         "samplePeriodSecs": 60,
-        "slot": 451334105
+        "slot": 451461591
       },
       {
-        "numNonVoteTransactions": 155437,
+        "numNonVoteTransactions": 127242,
+        "numSlots": 228,
+        "numTransactions": 280356,
+        "samplePeriodSecs": 60,
+        "slot": 451461369
+      },
+      {
+        "numNonVoteTransactions": 146961,
+        "numSlots": 224,
+        "numTransactions": 297297,
+        "samplePeriodSecs": 60,
+        "slot": 451461141
+      },
+      {
+        "numNonVoteTransactions": 137029,
+        "numSlots": 215,
+        "numTransactions": 281393,
+        "samplePeriodSecs": 60,
+        "slot": 451460917
+      },
+      {
+        "numNonVoteTransactions": 145300,
+        "numSlots": 217,
+        "numTransactions": 291030,
+        "samplePeriodSecs": 60,
+        "slot": 451460702
+      },
+      {
+        "numNonVoteTransactions": 152602,
         "numSlots": 223,
-        "numTransactions": 305568,
+        "numTransactions": 302648,
         "samplePeriodSecs": 60,
-        "slot": 451333885
+        "slot": 451460485
       },
       {
-        "numNonVoteTransactions": 165829,
-        "numSlots": 225,
-        "numTransactions": 317036,
+        "numNonVoteTransactions": 145070,
+        "numSlots": 220,
+        "numTransactions": 292860,
         "samplePeriodSecs": 60,
-        "slot": 451333662
+        "slot": 451460262
       },
       {
-        "numNonVoteTransactions": 187375,
+        "numNonVoteTransactions": 164079,
         "numSlots": 224,
-        "numTransactions": 338002,
+        "numTransactions": 314624,
         "samplePeriodSecs": 60,
-        "slot": 451333437
+        "slot": 451460042
       },
       {
-        "numNonVoteTransactions": 182397,
-        "numSlots": 221,
-        "numTransactions": 330960,
-        "samplePeriodSecs": 60,
-        "slot": 451333213
-      },
-      {
-        "numNonVoteTransactions": 143203,
+        "numNonVoteTransactions": 145513,
         "numSlots": 214,
-        "numTransactions": 287142,
+        "numTransactions": 289420,
         "samplePeriodSecs": 60,
-        "slot": 451332992
+        "slot": 451459818
       },
       {
-        "numNonVoteTransactions": 108479,
-        "numSlots": 224,
-        "numTransactions": 259109,
+        "numNonVoteTransactions": 145437,
+        "numSlots": 225,
+        "numTransactions": 296727,
         "samplePeriodSecs": 60,
-        "slot": 451332778
+        "slot": 451459604
+      },
+      {
+        "numNonVoteTransactions": 150645,
+        "numSlots": 215,
+        "numTransactions": 295236,
+        "samplePeriodSecs": 60,
+        "slot": 451459379
+      },
+      {
+        "numNonVoteTransactions": 150709,
+        "numSlots": 221,
+        "numTransactions": 299356,
+        "samplePeriodSecs": 60,
+        "slot": 451459164
+      },
+      {
+        "numNonVoteTransactions": 147727,
+        "numSlots": 219,
+        "numTransactions": 295021,
+        "samplePeriodSecs": 60,
+        "slot": 451458943
+      },
+      {
+        "numNonVoteTransactions": 163359,
+        "numSlots": 222,
+        "numTransactions": 312702,
+        "samplePeriodSecs": 60,
+        "slot": 451458724
       }
     ]
   },

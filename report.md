@@ -1,6 +1,6 @@
 # Solana Ecosystem Auto-Updating Report
 
-Generated: `2026-09-29T22:14:26+00:00`
+Generated: `2026-09-30T05:31:32+00:00`
 
 ## Executive Summary
 
@@ -12,26 +12,26 @@ This report combines live network, validator, market, and TVL signals into a rep
 | --- | ---: |
 | Network health | ok |
 | Epoch | 1045 |
-| Epoch progress | 77.06% |
-| Absolute slot | 451.77M |
-| Block height | 429.81M |
-| Transactions processed | 554.19B |
-| Latest TPS | 4.93K |
-| Average TPS, last 24 samples | 4.81K |
-| Average slot time, last 24 samples | 269 ms |
+| Epoch progress | 99.76% |
+| Absolute slot | 451.87M |
+| Block height | 429.91M |
+| Transactions processed | 554.31B |
+| Latest TPS | 4.08K |
+| Average TPS, last 24 samples | 4.11K |
+| Average slot time, last 24 samples | 267 ms |
 | Active validators | 673 |
 | Delinquent validators | 10 |
 | Delinquent validator ratio | 1.46% |
-| Top 10 validator stake share | 24.47% |
-| SOL price | $119.15 |
-| SOL 24h change | n/a |
-| Solana TVL | $6.53B |
-| Stablecoin supply | $16.60B |
+| Top 10 validator stake share | 24.46% |
+| SOL price | $119.03 |
+| SOL 24h change | 0.98% |
+| Solana TVL | $6.54B |
+| Stablecoin supply | $16.41B |
 | DEX volume, 24h | $2.66B |
 
 ## Anomaly Flags
 
-- **info / data_fetch**: One or more data sources returned errors.
+- No threshold-based anomalies detected in this run.
 
 ## Automation Notes
 
@@ -49,7 +49,3 @@ This report combines live network, validator, market, and TVL signals into a rep
 - defillama_chains: https://api.llama.fi/v2/chains
 - defillama_solana_dex_volume: https://api.llama.fi/overview/dexs/solana?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true
 - defillama_solana_stablecoins: https://stablecoins.llama.fi/stablecoincharts/Solana
-
-## Fetch Errors
-
-- CoinGecko SOL price: HTTPError: HTTP Error 403: Forbidden

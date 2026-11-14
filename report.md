@@ -1,6 +1,6 @@
 # Solana Ecosystem Auto-Updating Report
 
-Generated: `2026-11-14T06:20:31+00:00`
+Generated: `2026-11-14T17:59:36+00:00`
 
 ## Executive Summary
 
@@ -12,26 +12,27 @@ This report combines live network, validator, market, and TVL signals into a rep
 | --- | ---: |
 | Network health | ok |
 | Epoch | 1086 |
-| Epoch progress | 16.94% |
-| Absolute slot | 469.23M |
-| Block height | 447.24M |
-| Transactions processed | 566.62B |
-| Latest TPS | 1.31K |
-| Average TPS, last 24 samples | 1.34K |
+| Epoch progress | 62.10% |
+| Absolute slot | 469.42M |
+| Block height | 447.44M |
+| Transactions processed | 566.69B |
+| Latest TPS | 1.78K |
+| Average TPS, last 24 samples | 1.94K |
 | Average slot time, last 24 samples | 215 ms |
 | Active validators | 661 |
 | Delinquent validators | 38 |
 | Delinquent validator ratio | 5.44% |
-| Top 10 validator stake share | 24.78% |
-| SOL price | $75.86 |
-| SOL 24h change | -4.00% |
-| Solana TVL | $4.84B |
+| Top 10 validator stake share | 24.75% |
+| SOL price | $72.71 |
+| SOL 24h change | -9.02% |
+| Solana TVL | $4.78B |
 | Stablecoin supply | $14.14B |
-| DEX volume, 24h | $1.45B |
+| DEX volume, 24h | $1.56B |
 
 ## Anomaly Flags
 
 - **watch / validator_delinquency**: Validator delinquency is above 5%.
+- **info / sol_price_24h**: SOL moved more than 8% over 24h.
 
 ## Automation Notes
 
